@@ -2,25 +2,12 @@ package com.ccommit.fashionserver.controller;
 
 import com.ccommit.fashionserver.dto.UserDto;
 import com.ccommit.fashionserver.service.UserService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
-/**
- * packageName    : com.ccommit.fashionserver.controller
- * fileName       : UsersController
- * author         : juoiy (Windows current login user)
- * date           : 2023-07-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-07-27        juoiy       최초 생성
- */
 
 /**
  * @Controller + @ResponseBody = @RestController

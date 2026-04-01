@@ -1,0 +1,15 @@
+[2026-04-01 18:22:17.638]  INFO 23432 --- [kground-preinit] o.h.v.i.u.Version                        : HV000001: Hibernate Validator 8.0.1.Final
+[2026-04-01 18:22:17.863]  INFO 23432 --- [  restartedMain] c.c.f.FashionCommerceServerApplication   : Starting FashionCommerceServerApplication using Java 21.0.10 with PID 23432 (D:\eclipse-workspace\fashion-commerce-server\target\classes started by juoiy in D:\eclipse-workspace\fashion-commerce-server)
+[2026-04-01 18:22:17.877]  INFO 23432 --- [  restartedMain] c.c.f.FashionCommerceServerApplication   : No active profile set, falling back to 1 default profile: "default"
+[2026-04-01 18:22:18.038]  INFO 23432 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2026-04-01 18:22:18.040]  INFO 23432 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2026-04-01 18:22:20.472]  INFO 23432 --- [  restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port 8080 (http)
+[2026-04-01 18:22:20.493]  INFO 23432 --- [  restartedMain] o.a.c.h.Http11NioProtocol                : Initializing ProtocolHandler ["http-nio-8080"]
+[2026-04-01 18:22:20.502]  INFO 23432 --- [  restartedMain] o.a.c.c.StandardService                  : Starting service [Tomcat]
+[2026-04-01 18:22:20.503]  INFO 23432 --- [  restartedMain] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/10.1.31]
+[2026-04-01 18:22:20.598]  INFO 23432 --- [  restartedMain] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+[2026-04-01 18:22:20.605]  INFO 23432 --- [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2556 ms
+[2026-04-01 18:22:22.742]  INFO 23432 --- [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+[2026-04-01 18:22:22.783]  INFO 23432 --- [  restartedMain] o.a.c.h.Http11NioProtocol                : Starting ProtocolHandler ["http-nio-8080"]
+[2026-04-01 18:22:22.829]  INFO 23432 --- [  restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port 8080 (http) with context path '/'
+[2026-04-01 18:22:22.848]  INFO 23432 --- [  restartedMain] c.c.f.FashionCommerceServerApplication   : Started FashionCommerceServerApplication in 5.848 seconds (process running for 8.321)

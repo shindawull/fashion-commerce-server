@@ -1,23 +1,12 @@
 package com.ccommit.fashionserver.dto;
 
-import com.ccommit.fashionserver.service.PhonNumCheck;
+import com.ccommit.fashionserver.service.PhoneNumCheck;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 
-/**
- * packageName    : com.ccommit.fashionserver.dto
- * fileName       : UserDto
- * author         : juoiy
- * date           : 2023-07-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-07-27        juoiy       최초 생성
- */
 @Getter
 @Setter
 public class UserDto {
@@ -27,7 +16,7 @@ public class UserDto {
     @NotBlank
     private String password;       //비밀번호
     @NotBlank
-    @PhonNumCheck
+    @PhoneNumCheck
     private String phoneNumber;    //휴대폰번호
     private Date createDate;       //생성날짜
     private Date updateDate;       //수정날짜

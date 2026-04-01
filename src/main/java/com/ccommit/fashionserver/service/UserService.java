@@ -4,25 +4,14 @@ import com.ccommit.fashionserver.dto.UserDto;
 import com.ccommit.fashionserver.dto.UserType;
 import com.ccommit.fashionserver.mapper.UserMapper;
 import com.ccommit.fashionserver.utils.BcryptEncoder;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.regex.Pattern;
 
-/**
- * packageName    : com.ccommit.fashionserver.service
- * fileName       : UserService
- * author         : juoiy
- * date           : 2023-07-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-07-27        juoiy       최초 생성
- */
 @Slf4j
 @Service
 public class UserService {

@@ -7,18 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
-/**
- * packageName    : com.ccommit.fashionserver.config
- * fileName       : DataSourceConfig
- * author         : juoiy
- * date           : 2023-08-05
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-08-05        juoiy       최초 생성
- */
-
 @Configuration
 public class DataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource")
