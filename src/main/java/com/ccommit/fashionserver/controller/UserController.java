@@ -18,18 +18,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
- * packageName    : com.ccommit.fashionserver.controller
- * fileName       : UsersController
- * author         : juoiy (Windows current login user)
- * date           : 2023-07-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-07-27        juoiy       최초 생성
- */
-
-/**
  * @Controller + @ResponseBody = @RestController
  * @ResponseBody를 붙여서 JSON을 만들었지만,
  * @RestController로 쉽게 알아서 전송 가능한 문자열 만들어준다.

@@ -12,17 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * packageName    : com.ccommit.fashionserver.service
- * fileName       : ProductService
- * author         : juoiy
- * date           : 2023-08-24
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-08-24        juoiy       최초 생성
- */
 @Log4j2
 @Service
 public class ProductService {

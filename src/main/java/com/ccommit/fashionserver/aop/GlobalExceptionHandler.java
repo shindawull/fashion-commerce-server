@@ -9,17 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * packageName    : com.ccommit.fashionserver.aop
- * fileName       : GlobalExceptionHandler
- * author         : juoiy
- * date           : 2023-09-07
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-07        juoiy       최초 생성
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

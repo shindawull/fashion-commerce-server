@@ -6,17 +6,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 
-/**
- * packageName    : com.ccommit.fashionserver.dto
- * fileName       : ProductDto
- * author         : juoiy
- * date           : 2023-08-24
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-08-24        juoiy       최초 생성
- */
 @Getter
 @Setter
 public class ProductDto {

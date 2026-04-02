@@ -6,17 +6,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * packageName    : com.ccommit.fashionserver.service
- * fileName       : PhonNumCheck
- * author         : juoiy
- * date           : 2023-08-24
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-08-24        juoiy       최초 생성
- */
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PhoneNumCheckValidator.class)

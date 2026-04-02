@@ -13,17 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * packageName    : com.ccommit.fashionserver.controller
- * fileName       : ProductController
- * author         : juoiy
- * date           : 2023-08-24
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-08-24        juoiy       최초 생성
- */
 @Log4j2
 @RestController
 @RequestMapping("/products")

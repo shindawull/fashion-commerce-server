@@ -10,18 +10,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
 
-
-/**
- * packageName    : com.ccommit.fashionserver.aop
- * fileName       : LoginCheckAspect
- * author         : juoiy
- * date           : 2023-09-22
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-22        juoiy       최초 생성
- */
 @Aspect
 @Component
 public class LoginCheckAspect {

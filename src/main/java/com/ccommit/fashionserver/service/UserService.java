@@ -17,17 +17,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
-/**
- * packageName    : com.ccommit.fashionserver.service
- * fileName       : UserService
- * author         : juoiy
- * date           : 2023-07-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-07-27        juoiy       최초 생성
- */
 @Service
 public class UserService {
     @Autowired
@@ -57,7 +46,7 @@ public class UserService {
 
             joinPossibleDate = userMapper.getJoinPossibleDate(userDto.getUserId());
             logger.info("joinPossibleDate : " + joinPossibleDate);
-            if(joinPossibleDate != null){
+            if (joinPossibleDate != null) {
                 logger.debug("첫 가입");
                 if (userMapper.isJoinPossible(userDto.getUserId(), joinPossibleDate) == 1) {
                     logger.debug("탈퇴날짜 기준으로 30일 이내로 재가입 불가");

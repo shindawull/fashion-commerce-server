@@ -8,17 +8,6 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 
-/**
- * packageName    : com.ccommit.fashionserver.dto
- * fileName       : UserDto
- * author         : juoiy
- * date           : 2023-07-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-07-27        juoiy       최초 생성
- */
 @Getter
 @Setter
 @ToString

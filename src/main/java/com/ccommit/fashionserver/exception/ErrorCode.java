@@ -2,17 +2,6 @@ package com.ccommit.fashionserver.exception;
 
 import lombok.Getter;
 
-/**
- * packageName    : com.ccommit.fashionserver.exception
- * fileName       : ErrorCode
- * author         : juoiy
- * date           : 2023-09-30
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-30        juoiy       최초 생성
- */
 @Getter
 public enum ErrorCode {
     USER_INSERT_DUPLICATE_ERROR(601, "중복된 아이디입니다. 확인해주세요."),

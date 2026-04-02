@@ -2,17 +2,6 @@ package com.ccommit.fashionserver.utils;
 
 import javax.servlet.http.HttpSession;
 
-/**
- * packageName    : com.ccommit.fashionserver.utils
- * fileName       : SessionUtils
- * author         : juoiy
- * date           : 2023-09-26
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-26        juoiy       최초 생성
- */
 public class SessionUtils {
     private static final String USER = "USER";
     private static final String SELLER = "SELLER";
