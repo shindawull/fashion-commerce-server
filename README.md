@@ -6,10 +6,10 @@
 - 객체지향 원리와 디자인패턴 적용
 
 ## 사용기술
-- JAVA8.0
-- Mysql
-- SprigBoot
-- Mybatis
+- SprigBoot 2.7.8 -> 3.3.5
+- JAVA 1.8 -> 21
+- Mybatis 2.2.2 -> 3.0.3
+- MySQL
 - OAuth2.0
 
 ## 기획
