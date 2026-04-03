@@ -4,10 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ccommit.fashionserver.mapper.UserMapper">
 
-    <select id="isIdCheck" resultType="int">
+    <select id="isExistId" resultType="int">
         SELECT COUNT(id)
         FROM users
         WHERE user_id = #{userId}
+        AND is_withdraw = 0
     </select>
 
     <insert id="signUp" parameterType="com.ccommit.fashionserver.dto.UserDto">
@@ -21,11 +22,25 @@
         #{isWithdraw},#{userId}, #{userType})
     </insert>
 
-    <update id="userWithdraw" parameterType="String">
+    <select id="getJoinPossibleDate" resultType="String">
+        SELECT DATE_ADD(DATE_FORMAT(update_date, '%Y-%m-%d'), INTERVAL 30 DAY) as joinPossibleDate
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="isJoinPossible" resultType="int">
+        SELECT COUNT(id)
+        FROM users
+        WHERE user_id = #{userId}
+        AND DATE_FORMAT(#{joinPossibleDate}, '%Y-%m-%d') > now()
+        AND is_withdraw = 1
+    </select>
+
+    <update id="userWithdraw" parameterType="int">
         UPDATE users
         SET update_date = now(),
-            is_withdraw = 0
-        WHERE user_id = #{userId}
+            is_withdraw = 1
+        WHERE id = #{id}
     </update>
 
     <update id="userInfoUpdate" parameterType="com.ccommit.fashionserver.dto.UserDto">
@@ -41,7 +56,7 @@
                 phone_number = #{phoneNumber},
             </if>
               update_date = now()
-        WHERE user_id = #{userId}
+        WHERE id = #{id}
     </update>
 
     <select id="readUserInfo" resultType="com.ccommit.fashionserver.dto.UserDto">
@@ -56,7 +71,8 @@
                is_withdraw,
                user_type
         FROM users
-        WHERE user_id = #{id}
+        WHERE user_id = #{userId}
+        AND is_withdraw = 0
     </select>
 
 </mapper>

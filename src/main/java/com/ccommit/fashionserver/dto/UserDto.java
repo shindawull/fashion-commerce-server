@@ -1,14 +1,16 @@
 package com.ccommit.fashionserver.dto;
 
 import com.ccommit.fashionserver.service.PhoneNumCheck;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+import jakarta.validation.constraints.NotBlank;
 import java.sql.Date;
 
 @Getter
 @Setter
+@ToString
 public class UserDto {
     private int id;                //번호
     @NotBlank

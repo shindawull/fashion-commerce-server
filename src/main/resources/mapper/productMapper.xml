@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccommit.fashionserver.mapper.ProductMapper">
+
+    <insert id="insertProduct" parameterType="com.ccommit.fashionserver.dto.ProductDto">
+        INSERT INTO products (id, name, sale_quantity, price, category_id, brand_name,create_date,
+        sale_id)
+        VALUES (#{id}, #{name}, #{saleQuantity}, #{price}, #{categoryId}, #{brandName},now(),
+        #{saleId})
+    </insert>
+
+    <update id="updateProduct" parameterType="com.ccommit.fashionserver.dto.ProductDto">
+        UPDATE products
+        SET
+        <if test="name != null and !name.equals('') ">
+            name = #{name},
+        </if>
+        <if test="saleQuantity != null and !saleQuantity.equals('') ">
+            sale_quantity = #{saleQuantity},
+        </if>
+        <if test="price != null and !price.equals('') ">
+            price =  #{price},
+        </if>
+        <if test="categoryId != 0 and categoryId != null and !categoryId.equals('') ">
+            category_id = #{categoryId},
+        </if>
+        <if test="brandName != null and !brandName.equals('') ">
+            brand_name = #{brandName},
+        </if>
+            sale_id = #{saleId},
+            update_date = now()
+        WHERE id = #{id}
+    </update>
+
+    <select id="getProductList" resultType="com.ccommit.fashionserver.dto.ProductDto">
+        SELECT  id,
+                name,
+                sale_quantity,
+                price,
+                brand_name,
+                category_id,
+                like_count,
+                sale_id,
+                create_date,
+                update_date
+        FROM products
+        WHERE 1 = 1
+        <if test="categoryId != categoryAllNumber and categoryId != null">
+            AND category_id = #{categoryId}
+        </if>
+        <if test="searchType == 'NEW'  and searchType.equals('NEW') ">
+            ORDER BY create_date DESC
+        </if>
+        <if test="searchType == 'LOW_PRICE' and searchType.equals('LOW_PRICE') ">
+            ORDER BY CAST(price AS UNSIGNED) ASC
+        </if>
+        <if test="searchType == 'HIGH_PRICE' and searchType.equals('HIGH_PRICE') ">
+            ORDER BY CAST(price AS UNSIGNED) DESC
+        </if>
+        <if test="searchType == 'LIKE' and searchType.equals('LIKE') ">
+            ORDER BY like_count DESC
+        </if>
+    </select>
+
+    <select id="getDetailProduct" resultType="com.ccommit.fashionserver.dto.ProductDto">
+        SELECT  id,
+                name,
+                sale_quantity,
+                price,
+                category_id,
+                like_count,
+                brand_name,
+                sale_id,
+                create_date,
+                update_date
+        FROM products
+        WHERE id = #{productId}
+    </select>
+
+    <delete id="deleteProduct" parameterType="int">
+        DELETE FROM products
+        WHERE id = #{id}
+    </delete>
+</mapper>

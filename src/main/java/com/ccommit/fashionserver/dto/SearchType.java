@@ -1,13 +1,14 @@
 package com.ccommit.fashionserver.dto;
 
-public enum UserType {
-    USER("USER"),
-    SELLER("SELLER"),
-    ADMIN("ADMIN");
+public enum SearchType {
+    NEW("NEW"),
+    LOW_PRICE("LOW_PRICE"),
+    HIGH_PRICE("HIGH_PRICE"),
+    LIKE("LIKE");
 
     private final String name;
 
-    UserType(String name) {
+    SearchType(String name) {
         this.name = name;
     }
 

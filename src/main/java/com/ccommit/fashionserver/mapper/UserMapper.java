@@ -7,11 +7,15 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper {
     int signUp(UserDto userDto);
 
-    int isIdCheck(String userId);
+    int isExistId(String userId);
 
-    int userWithdraw(String userId);
+    int userWithdraw(int id);
 
     int userInfoUpdate(UserDto userDto);
 
     UserDto readUserInfo(String userId);
+
+    int isJoinPossible(String userId, String joinPossibleDate);
+
+    String getJoinPossibleDate(String userId);
 }
