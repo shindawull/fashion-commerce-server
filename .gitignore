@@ -36,3 +36,5 @@ build/
 logs/
 *.log
 *.log.gz
+
+application-local.properties
