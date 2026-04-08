@@ -1,7 +1,1 @@
-[2026-04-03 16:15:46.060]  INFO ${sys:PID} --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.ccommit.fashionserver.FashionCommerceServerApplicationTests]: FashionCommerceServerApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-[2026-04-03 16:15:46.293]  INFO ${sys:PID} --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.ccommit.fashionserver.FashionCommerceServerApplication for test class com.ccommit.fashionserver.FashionCommerceServerApplicationTests
-[2026-04-03 16:15:46.570]  INFO ${sys:PID} --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
-[2026-04-03 16:15:46.929]  INFO 19936 --- [kground-preinit] o.h.v.i.u.Version                        : HV000001: Hibernate Validator 8.0.1.Final
-[2026-04-03 16:15:46.968]  INFO 19936 --- [           main] .f.FashionCommerceServerApplicationTests : Starting FashionCommerceServerApplicationTests using Java 21.0.10 with PID 19936 (started by juoiy in D:\eclipse-workspace\fashion-commerce-server)
-[2026-04-03 16:15:46.971]  INFO 19936 --- [           main] .f.FashionCommerceServerApplicationTests : No active profile set, falling back to 1 default profile: "default"
-[2026-04-03 16:15:50.601]  INFO 19936 --- [           main] .f.FashionCommerceServerApplicationTests : Started FashionCommerceServerApplicationTests in 4.049 seconds (process running for 7.611)
+[2026-04-08 19:02:19.463]  WARN 4628 --- [l-1 housekeeper] c.z.h.p.HikariPool                       : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=11m47s957ms530µs401ns).
