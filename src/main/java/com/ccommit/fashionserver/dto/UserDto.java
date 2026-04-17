@@ -20,7 +20,6 @@ public class UserDto {
     private String address;        //주소
 
     @NotBlank
-    @JsonIgnore
     private String password;       //비밀번호
 
     @NotBlank
