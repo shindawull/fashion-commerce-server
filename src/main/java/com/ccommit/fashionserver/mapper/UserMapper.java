@@ -13,9 +13,11 @@ public interface UserMapper {
 
     int userInfoUpdate(UserDto userDto);
 
-    UserDto readUserInfo(String userId);
+    UserDto findByUserInfo(String userId);
 
     int isJoinPossible(String userId, String joinPossibleDate);
 
     String getJoinPossibleDate(String userId);
+
+    int signUpOAuth(UserDto userDto);
 }

@@ -8,38 +8,40 @@ import com.ccommit.fashionserver.exception.FashionServerException;
 import com.ccommit.fashionserver.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * @Controller + @ResponseBody = @RestController
- * @ResponseBody를 붙여서 JSON을 만들었지만,
+ * @ResponseBody를 붙여서 FJSON을 만들었지만,
  * @RestController로 쉽게 알아서 전송 가능한 문자열 만들어준다.
  */
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
     private final UserService userService;
 
-    public static final Logger logger = LogManager.getLogger(UserController.class);
-
-    public UserController(UserService userService) {
-        this.userService = userService;
+    /* 브라우저에서 구글 로그인
+    http://localhost:8080/oauth2/authorization/google */
+    @PostMapping("/oauth/profile")
+    public ResponseEntity<CommonResponse<UserDto>> completeOAuthProfile(
+            @RequestHeader("Authorization") String token,
+            @RequestBody UserDto userDto) {
+        log.info("[추가 정보 입력] 요청");
+        UserDto userDtoResult = userService.completeOAuthProfile(token, userDto);
+        CommonResponse<UserDto> response = new CommonResponse<>(HttpStatus.OK, "SUCCESS", userDtoResult.getUserId() + "님 정상적으로 가입되었습니다.", userDtoResult);
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * @RequestMapping(method = RequestMethod.POST, path="")
-     * 아래의 @PostMapping("")와 동일. Post일 경우 간결하게 원하면 지금처럼 작성하면 된다.
-     */
     @PostMapping("/sign-up")
     public ResponseEntity<CommonResponse<UserDto>> signUp(@Valid @RequestBody UserDto userDto) {
-        logger.debug("Sign Up Start");
+        log.debug("Sign Up Start");
         UserDto userDtoResult = userService.signUp(userDto);
         CommonResponse<UserDto> response = new CommonResponse<>(HttpStatus.OK, "SUCCESS", userDto.getUserId() + "님 정상적으로 가입되었습니다.", userDtoResult);
         return ResponseEntity.ok(response);
@@ -68,13 +70,13 @@ public class UserController {
         if (StringUtils.isBlank(userDto.getUserId()) || StringUtils.isBlank(userDto.getPassword())) {
             throw new NullPointerException("빈 값이 존재합니다. 확인해주세요.");
         }
-        logger.debug("UserId : " + userDto.getUserId() + " Password: " + userDto.getPassword());
+        log.debug("UserId : " + userDto.getUserId() + " Password: " + userDto.getPassword());
         UserDto userInfo = userService.passwordCheck(userDto.getUserId(), userDto.getPassword());
         if (userInfo.getId() == 0 || userInfo == null)
             throw new FashionServerException(ErrorCode.valueOf("USER_NOT_USING_ERROR").getMessage(), 602);
 
         userService.insertSession(session, userInfo);
-        logger.debug("Login success = " + userInfo.getId());
+        log.debug("Login success = " + userInfo.getId());
         CommonResponse<UserDto> response = new CommonResponse<>(HttpStatus.OK, "SUCCESS", userDto.getUserId() + "회원 로그인", userInfo);
         return ResponseEntity.ok(response);
     }
@@ -84,7 +86,7 @@ public class UserController {
             , LoginCheck.UserType.ADMIN})
     public ResponseEntity<CommonResponse<String>> logout(Integer loginSession, HttpSession session) {
         userService.clearSession(session);
-        logger.debug("Logout success");
+        log.debug("Logout success");
         CommonResponse<String> response = new CommonResponse<>(HttpStatus.OK, "SUCCESS", "정상적으로 로그아웃 되었습니다.", null);
         return ResponseEntity.ok(response);
     }

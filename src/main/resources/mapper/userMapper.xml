@@ -11,6 +11,19 @@
         AND is_withdraw = 0
     </select>
 
+    <!-- OAuth2 회원가입용 -->
+    <insert id="signUpOAuth" parameterType="com.ccommit.fashionserver.dto.UserDto">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            SELECT IFNULL(max(id)+1,1) as id
+            FROM users
+        </selectKey>
+        INSERT INTO users (id, address, password, phone_number, update_date, create_date, is_join,
+        is_withdraw, user_id, user_type, oauth_provider, oauth_id, is_profile_complete)
+        VALUES (#{id}, #{address}, #{password}, #{phoneNumber}, #{updateDate}, now(), #{isJoin},
+        #{isWithdraw}, #{userId}, #{userType}, #{oauthProvider}, #{oauthId}, #{isProfileComplete})
+    </insert>
+
+    <!-- 자체 회원가입용 -->
     <insert id="signUp" parameterType="com.ccommit.fashionserver.dto.UserDto">
         <selectKey keyProperty="id" resultType="int" order="BEFORE">
             SELECT IFNULL(max(id)+1,1) as id
@@ -39,37 +52,37 @@
     <update id="userWithdraw" parameterType="int">
         UPDATE users
         SET update_date = now(),
-            is_withdraw = 1
+        is_withdraw = 1
         WHERE id = #{id}
     </update>
 
     <update id="userInfoUpdate" parameterType="com.ccommit.fashionserver.dto.UserDto">
         UPDATE users
         SET
-            <if test="address != null &amp;&amp; !address.equals('') ">
-                address = #{address},
-            </if>
-            <if test="password != null&amp;&amp; !password.equals('') ">
-                password = #{password},
-            </if>
-            <if test="phoneNumber != null &amp;&amp; !phoneNumber.equals('') ">
-                phone_number = #{phoneNumber},
-            </if>
-              update_date = now()
+        <if test="address != null &amp;&amp; !address.equals('') ">
+            address = #{address},
+        </if>
+        <if test="password != null&amp;&amp; !password.equals('') ">
+            password = #{password},
+        </if>
+        <if test="phoneNumber != null &amp;&amp; !phoneNumber.equals('') ">
+            phone_number = #{phoneNumber},
+        </if>
+        update_date = now()
         WHERE id = #{id}
     </update>
 
-    <select id="readUserInfo" resultType="com.ccommit.fashionserver.dto.UserDto">
+    <select id="findByUserInfo" resultType="com.ccommit.fashionserver.dto.UserDto">
         SELECT id,
-               password,
-               user_id,
-               address,
-               phone_number,
-               create_date,
-               update_date,
-               is_join,
-               is_withdraw,
-               user_type
+        password,
+        user_id,
+        address,
+        phone_number,
+        create_date,
+        update_date,
+        is_join,
+        is_withdraw,
+        user_type
         FROM users
         WHERE user_id = #{userId}
         AND is_withdraw = 0

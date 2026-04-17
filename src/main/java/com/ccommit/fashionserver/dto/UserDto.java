@@ -1,7 +1,7 @@
 package com.ccommit.fashionserver.dto;
 
 import com.ccommit.fashionserver.service.PhoneNumCheck;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -20,6 +20,7 @@ public class UserDto {
     private String address;        //주소
 
     @NotBlank
+    @JsonIgnore
     private String password;       //비밀번호
 
     @NotBlank
