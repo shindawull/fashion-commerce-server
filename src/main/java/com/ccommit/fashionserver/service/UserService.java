@@ -7,12 +7,12 @@ import com.ccommit.fashionserver.exception.FashionServerException;
 import com.ccommit.fashionserver.jwt.JwtTokenProvider;
 import com.ccommit.fashionserver.mapper.UserMapper;
 import com.ccommit.fashionserver.utils.BcryptEncoder;
-import com.ccommit.fashionserver.utils.SessionUtils;
-import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
@@ -32,6 +32,7 @@ public class UserService {
         return userMapper.findByUserInfo(userId);
     }
 
+    @Transactional
     public UserDto completeOAuthProfile(String token, UserDto userDto) {
         String rawToken = token.replace("Bearer ", "");
 
@@ -58,20 +59,20 @@ public class UserService {
         return result;
     }
 
+    @Transactional
     public UserDto signUp(UserDto userDto) {
         UserDto result = new UserDto();
         String joinPossibleDate = "";
         if (isExistId(userDto.getUserId())) {
-            throw new FashionServerException(ErrorCode.valueOf("USER_INSERT_DUPLICATE_ERROR").getMessage(), 601);
+            throw new FashionServerException(ErrorCode.USER_INSERT_DUPLICATE_ERROR.getMessage(), 601);
         } else {
 
             joinPossibleDate = userMapper.getJoinPossibleDate(userDto.getUserId());
-            log.info("joinPossibleDate : " + joinPossibleDate);
+            log.info("[재가입 가능 날짜] : {} ", joinPossibleDate);
             if (joinPossibleDate != null) {
-                log.debug("첫 가입");
                 if (userMapper.isJoinPossible(userDto.getUserId(), joinPossibleDate) == 1) {
-                    log.debug("탈퇴날짜 기준으로 30일 이내로 재가입 불가");
-                    throw new FashionServerException(ErrorCode.USER_NOT_AUTHORIZED_ERROR.getMessage(), 603);
+                    log.info("[탈퇴날짜 기준으로 30일 이내로 재가입 불가]");
+                    throw new FashionServerException(ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getMessage(), 605);
                 }
             }
             userDto.setPassword(encrypt.hashPassword(userDto.getPassword()));
@@ -94,13 +95,15 @@ public class UserService {
         return result;
     }
 
+    @Transactional
     public int userWithdraw(int id) {
         return userMapper.userWithdraw(id);
     }
 
+    @Transactional
     public void userInfoUpdate(int id, UserDto userDto) {
         if (!isExistId(userDto.getUserId())) {
-            throw new FashionServerException(ErrorCode.valueOf("USER_NOT_USING_ERROR").getMessage(), 604);
+            throw new FashionServerException(ErrorCode.valueOf("USER_NOT_FOUND_ERROR").getMessage(), 604);
         } else {
             if (!StringUtils.isBlank(userDto.getPassword())) {
                 userDto.setPassword(encrypt.hashPassword(userDto.getPassword()));
@@ -121,12 +124,12 @@ public class UserService {
         boolean isMachPassword = false;
         String hashedPassword = "";
         if (!isExistId(userId))
-            throw new FashionServerException(ErrorCode.valueOf("USER_NOT_USING_ERROR").getMessage(), 604);
+            throw new FashionServerException(ErrorCode.valueOf("USER_NOT_FOUND_ERROR").getMessage(), 604);
         else
             hashedPassword = userMapper.findByUserInfo(userId).getPassword();
 
         if (StringUtils.isBlank(hashedPassword))
-            throw new NullPointerException("패스워드를 확인해주세요.");
+            throw new NullPointerException(ErrorCode.INPUT_NULL_ERROR.getMessage());
         else
             isMachPassword = encrypt.isMach(password, hashedPassword);
 
@@ -135,16 +138,19 @@ public class UserService {
         return result;
     }
 
-    public void insertSession(HttpSession session, UserDto userDto) {
-        if (userDto.getUserType() == UserType.USER)
-            SessionUtils.setUserLoginSession(session, userDto.getId());
-        else if (userDto.getUserType() == UserType.SELLER)
-            SessionUtils.setSellerLoginSession(session, userDto.getId());
-        else if (userDto.getUserType() == UserType.ADMIN)
-            SessionUtils.setAdminLoginSession(session, userDto.getId());
-    }
+    public UserDto login(@NotBlank String userId, @NotBlank String password) {
+        UserDto userDto = passwordCheck(userId, password);
 
-    public void clearSession(HttpSession session) {
-        SessionUtils.clearSession(session);
+        if (userDto == null || userDto.getId() == 0) {
+            throw new FashionServerException(ErrorCode.LOGIN_FAIL_ERROR.getMessage(), 607);
+        }
+
+        // 세션 대신 JWT 토큰 발급
+        String token = jwtTokenProvider.generateToken(userDto.getId(), userDto.getUserType());
+        log.info("[로그인] 완료 userId: {}", userId);
+
+        // 토큰 UserDto에 담아서 응답
+        userDto.setToken(token);
+        return userDto;
     }
 }

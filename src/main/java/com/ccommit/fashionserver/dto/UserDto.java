@@ -1,7 +1,6 @@
 package com.ccommit.fashionserver.dto;
 
 import com.ccommit.fashionserver.service.PhoneNumCheck;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -45,4 +44,6 @@ public class UserDto {
     private String oauthId;         // 소셜 로그인 고유ID
 
     private int isProfileComplete;  // 추가 정보 입력 완료 여부
+
+    private String token;           // 응답용 토큰 필드
 }
