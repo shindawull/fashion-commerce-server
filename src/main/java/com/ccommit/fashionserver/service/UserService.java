@@ -1,9 +1,9 @@
 package com.ccommit.fashionserver.service;
 
-import com.ccommit.fashionserver.dto.UserDto;
-import com.ccommit.fashionserver.dto.UserType;
 import com.ccommit.fashionserver.common.exception.ErrorCode;
 import com.ccommit.fashionserver.common.exception.FashionServerException;
+import com.ccommit.fashionserver.dto.UserDto;
+import com.ccommit.fashionserver.dto.UserType;
 import com.ccommit.fashionserver.jwt.JwtTokenProvider;
 import com.ccommit.fashionserver.mapper.UserMapper;
 import com.ccommit.fashionserver.utils.BcryptEncoder;
@@ -103,7 +103,7 @@ public class UserService {
     @Transactional
     public void userInfoUpdate(int id, UserDto userDto) {
         if (!isExistId(userDto.getUserId())) {
-            throw new FashionServerException(ErrorCode.valueOf("USER_NOT_FOUND_ERROR").getMessage(), 604);
+            throw new FashionServerException(ErrorCode.USER_NOT_FOUND_ERROR.getMessage(), 604);
         } else {
             if (!StringUtils.isBlank(userDto.getPassword())) {
                 userDto.setPassword(encrypt.hashPassword(userDto.getPassword()));
@@ -124,7 +124,7 @@ public class UserService {
         boolean isMachPassword = false;
         String hashedPassword = "";
         if (!isExistId(userId))
-            throw new FashionServerException(ErrorCode.valueOf("USER_NOT_FOUND_ERROR").getMessage(), 604);
+            throw new FashionServerException(ErrorCode.USER_NOT_FOUND_ERROR.getMessage(), 604);
         else
             hashedPassword = userMapper.findByUserInfo(userId).getPassword();
 
