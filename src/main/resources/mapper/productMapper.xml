@@ -5,9 +5,9 @@
 <mapper namespace="com.ccommit.fashionserver.mapper.ProductMapper">
 
     <insert id="insertProduct" parameterType="com.ccommit.fashionserver.dto.ProductDto">
-        INSERT INTO products (id, name, sale_quantity, price, category_id, brand_name,create_date,
+        INSERT INTO products (name, sale_quantity, price, category_id, brand_name,create_date,
         sale_id)
-        VALUES (#{id}, #{name}, #{saleQuantity}, #{price}, #{categoryId}, #{brandName},now(),
+        VALUES (#{name}, #{saleQuantity}, #{price}, #{categoryId}, #{brandName},now(),
         #{saleId})
     </insert>
 
