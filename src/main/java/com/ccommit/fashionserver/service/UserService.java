@@ -64,31 +64,38 @@ public class UserService {
         UserDto result = new UserDto();
         String joinPossibleDate = "";
         if (isExistId(userDto.getUserId())) {
-            throw new FashionServerException(ErrorCode.USER_INSERT_DUPLICATE_ERROR.getMessage(), 601);
+            throw new FashionServerException(ErrorCode.USER_INSERT_DUPLICATE_ERROR.getMessage(),
+                    ErrorCode.USER_INSERT_DUPLICATE_ERROR.getStatus());
         } else {
 
             joinPossibleDate = userMapper.getJoinPossibleDate(userDto.getUserId());
             log.info("[재가입 가능 날짜] : {} ", joinPossibleDate);
+
             if (joinPossibleDate != null) {
                 if (userMapper.isJoinPossible(userDto.getUserId(), joinPossibleDate) == 1) {
                     log.info("[탈퇴날짜 기준으로 30일 이내로 재가입 불가]");
-                    throw new FashionServerException(ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getMessage(), 605);
+                    throw new FashionServerException(ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getMessage(),
+                            ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getStatus());
                 }
             }
+
+            // UserType 유효성 검사 + set
+            UserType validUserType = Arrays.stream(UserType.values())
+                    .filter(userType -> userDto.getUserType().equals(userType))
+                            .findFirst()
+                    .orElseThrow(() -> {
+                        log.debug("존재하지 않는 회원 타입입니다.");
+                        return new FashionServerException(
+                                ErrorCode.USER_TYPE_NOT_FOUND_ERROR.getMessage(),
+                                ErrorCode.USER_TYPE_NOT_FOUND_ERROR.getStatus()
+                        );
+                    });
+
+            userDto.setUserType(validUserType);
             userDto.setPassword(encrypt.hashPassword(userDto.getPassword()));
-            userDto.setPhoneNumber(userDto.getPhoneNumber());
             userDto.setJoin(true);
             userDto.setWithdraw(false);
-            Arrays.stream(UserType.values())
-                    .filter(userType -> userDto.getUserType().equals(userType.getName()))
-                    .forEach(userType -> {
-                        if (userDto.getUserType().equals(userType.getName())) {
-                            userDto.setUserType(userType);
-                        } else {
-                            log.debug("존재하지 않는 회원 타입입니다.");
-                            throw new NullPointerException("존재하지 않는 회원 타입입니다.");
-                        }
-                    });
+
             userMapper.signUp(userDto);
             result = userMapper.findByUserInfo(userDto.getUserId());
         }
