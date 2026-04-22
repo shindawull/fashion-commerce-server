@@ -3,24 +3,22 @@ package com.ccommit.fashionserver.service;
 import com.ccommit.fashionserver.dto.CategoryType;
 import com.ccommit.fashionserver.dto.ProductDto;
 import com.ccommit.fashionserver.dto.SearchType;
-import com.ccommit.fashionserver.exception.FashionServerException;
+import com.ccommit.fashionserver.common.exception.FashionServerException;
 import com.ccommit.fashionserver.mapper.ProductMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    @Autowired
     private final ProductMapper productMapper;
-
-    public ProductService(ProductMapper productMapper) {
-        this.productMapper = productMapper;
-    }
 
     public List<ProductDto> getProductList(String categoryName, String searchType) {
         int categoryId = 0;

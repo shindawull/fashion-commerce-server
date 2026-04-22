@@ -2,8 +2,8 @@ package com.ccommit.fashionserver.service;
 
 import com.ccommit.fashionserver.dto.UserDto;
 import com.ccommit.fashionserver.dto.UserType;
-import com.ccommit.fashionserver.exception.ErrorCode;
-import com.ccommit.fashionserver.exception.FashionServerException;
+import com.ccommit.fashionserver.common.exception.ErrorCode;
+import com.ccommit.fashionserver.common.exception.FashionServerException;
 import com.ccommit.fashionserver.jwt.JwtTokenProvider;
 import com.ccommit.fashionserver.mapper.UserMapper;
 import com.ccommit.fashionserver.utils.BcryptEncoder;

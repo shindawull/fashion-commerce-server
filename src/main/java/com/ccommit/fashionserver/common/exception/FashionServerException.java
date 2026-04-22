@@ -1,4 +1,4 @@
-package com.ccommit.fashionserver.exception;
+package com.ccommit.fashionserver.common.exception;
 
 public class FashionServerException extends RuntimeException {
     public Integer status;

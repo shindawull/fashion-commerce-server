@@ -1,11 +1,11 @@
 package com.ccommit.fashionserver.controller;
 
-import com.ccommit.fashionserver.aop.CommonResponse;
+import com.ccommit.fashionserver.common.CommonResponse;
 import com.ccommit.fashionserver.aop.LoginCheck;
 import com.ccommit.fashionserver.dto.ProductDto;
 import com.ccommit.fashionserver.service.ProductService;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductController {
-    @Autowired
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping("/list")
     @LoginCheck(types = {LoginCheck.UserType.USER, LoginCheck.UserType.SELLER, LoginCheck.UserType.ADMIN})

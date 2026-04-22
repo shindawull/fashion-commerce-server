@@ -1,4 +1,4 @@
-package com.ccommit.fashionserver.exception;
+package com.ccommit.fashionserver.common.exception;
 
 import lombok.Getter;
 

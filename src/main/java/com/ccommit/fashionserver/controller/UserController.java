@@ -1,9 +1,9 @@
 package com.ccommit.fashionserver.controller;
 
-import com.ccommit.fashionserver.aop.CommonResponse;
+import com.ccommit.fashionserver.common.CommonResponse;
 import com.ccommit.fashionserver.aop.LoginCheck;
 import com.ccommit.fashionserver.dto.UserDto;
-import com.ccommit.fashionserver.exception.ErrorCode;
+import com.ccommit.fashionserver.common.exception.ErrorCode;
 import com.ccommit.fashionserver.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

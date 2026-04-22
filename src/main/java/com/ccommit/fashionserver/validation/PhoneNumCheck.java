@@ -1,4 +1,4 @@
-package com.ccommit.fashionserver.service;
+package com.ccommit.fashionserver.validation;
 
 import jakarta.validation.Constraint;
 

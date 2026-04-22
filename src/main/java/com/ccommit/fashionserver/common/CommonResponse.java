@@ -1,4 +1,4 @@
-package com.ccommit.fashionserver.aop;
+package com.ccommit.fashionserver.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

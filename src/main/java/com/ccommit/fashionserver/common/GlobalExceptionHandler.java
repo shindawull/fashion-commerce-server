@@ -1,6 +1,6 @@
-package com.ccommit.fashionserver.aop;
+package com.ccommit.fashionserver.common;
 
-import com.ccommit.fashionserver.exception.FashionServerException;
+import com.ccommit.fashionserver.common.exception.FashionServerException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
