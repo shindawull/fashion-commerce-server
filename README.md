@@ -17,6 +17,11 @@
 https://ovenapp.io/view/fGQCAoA4y8tBMSce9LzDsoBdZJoOjoKU/ROoSh
 
 ## 프로그램 주요 기능
+- 회원 API (자체 로그인 + OAuth2 구글)
+- 상품 API (대용량 트래픽 고려 Redis 캐싱)
+- 주문 API (TossPayments 연동)
+- 장바구니 (Redis)
+
 #### 계정
 - 로그인 세션 만료 시간 1시간
 - 로그아웃
