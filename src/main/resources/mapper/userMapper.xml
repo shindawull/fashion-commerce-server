@@ -88,4 +88,20 @@
         AND is_withdraw = 0
     </select>
 
+    <select id="findById" resultType="com.ccommit.fashionserver.dto.UserDto">
+        SELECT id,
+        password,
+        user_id,
+        address,
+        phone_number,
+        create_date,
+        update_date,
+        is_join,
+        is_withdraw,
+        user_type
+        FROM users
+        WHERE id = #{id}
+        AND is_withdraw = 0
+    </select>
+
 </mapper>

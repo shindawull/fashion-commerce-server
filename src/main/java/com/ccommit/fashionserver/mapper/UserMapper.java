@@ -20,4 +20,6 @@ public interface UserMapper {
     String getJoinPossibleDate(String userId);
 
     int signUpOAuth(UserDto userDto);
+
+    UserDto findById(int id);
 }

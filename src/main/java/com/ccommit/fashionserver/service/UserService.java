@@ -4,10 +4,14 @@ import com.ccommit.fashionserver.common.exception.ErrorCode;
 import com.ccommit.fashionserver.common.exception.FashionServerException;
 import com.ccommit.fashionserver.dto.UserDto;
 import com.ccommit.fashionserver.dto.UserType;
+import com.ccommit.fashionserver.dto.request.user.OAuthProfileRequest;
+import com.ccommit.fashionserver.dto.request.user.UserLoginRequest;
+import com.ccommit.fashionserver.dto.request.user.UserSignUpRequest;
+import com.ccommit.fashionserver.dto.request.user.UserUpdateRequset;
+import com.ccommit.fashionserver.dto.response.user.UserResponse;
 import com.ccommit.fashionserver.jwt.JwtTokenProvider;
 import com.ccommit.fashionserver.mapper.UserMapper;
 import com.ccommit.fashionserver.utils.BcryptEncoder;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +24,7 @@ import java.util.Arrays;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserMapper userMapper;
     private final BcryptEncoder encrypt;
     private final JwtTokenProvider jwtTokenProvider;
@@ -32,85 +37,85 @@ public class UserService {
         return userMapper.findByUserInfo(userId);
     }
 
-    @Transactional
-    public UserDto completeOAuthProfile(String token, UserDto userDto) {
-        String rawToken = token.replace("Bearer ", "");
-
-        // 임시 토큰에서 정보 추출
-        String email = jwtTokenProvider.getEmail(rawToken);
-        String oauthId = jwtTokenProvider.getOauthId(rawToken);
-        String provider = jwtTokenProvider.getProvider(rawToken);
-
-        userDto.setUserId(email);
-        userDto.setOauthProvider(provider);
-        userDto.setOauthId(oauthId);
-        userDto.setIsProfileComplete(1);
-        userDto.setUserType(UserType.USER);
-        userDto.setJoin(true);
-        userDto.setWithdraw(false);
-
-        String encryptedPassword = encrypt.hashPassword(userDto.getPassword());
-        userDto.setPassword(encryptedPassword);
-
-        userMapper.signUpOAuth(userDto);
-        log.info("[추가 정보 입력] 완료 email: {}", email);
-
-        UserDto result = userMapper.findByUserInfo(userDto.getUserId());
-        return result;
-    }
 
     @Transactional
-    public UserDto signUp(UserDto userDto) {
-        UserDto result = new UserDto();
-        String joinPossibleDate = "";
-        if (isExistId(userDto.getUserId())) {
+    public UserResponse signUp(UserSignUpRequest request) {
+        if (isExistId(request.getUserId())) {
             throw new FashionServerException(ErrorCode.USER_INSERT_DUPLICATE_ERROR.getMessage(),
                     ErrorCode.USER_INSERT_DUPLICATE_ERROR.getStatus());
-        } else {
-
-            joinPossibleDate = userMapper.getJoinPossibleDate(userDto.getUserId());
-            log.info("[재가입 가능 날짜] : {} ", joinPossibleDate);
-
-            if (joinPossibleDate != null) {
-                if (userMapper.isJoinPossible(userDto.getUserId(), joinPossibleDate) == 1) {
-                    log.info("[탈퇴날짜 기준으로 30일 이내로 재가입 불가]");
-                    throw new FashionServerException(ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getMessage(),
-                            ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getStatus());
-                }
-            }
-
-            // UserType 유효성 검사 + set
-            UserType validUserType = Arrays.stream(UserType.values())
-                    .filter(userType -> userDto.getUserType().equals(userType))
-                            .findFirst()
-                    .orElseThrow(() -> {
-                        log.debug("존재하지 않는 회원 타입입니다.");
-                        return new FashionServerException(
-                                ErrorCode.USER_TYPE_NOT_FOUND_ERROR.getMessage(),
-                                ErrorCode.USER_TYPE_NOT_FOUND_ERROR.getStatus()
-                        );
-                    });
-
-            userDto.setUserType(validUserType);
-            userDto.setPassword(encrypt.hashPassword(userDto.getPassword()));
-            userDto.setJoin(true);
-            userDto.setWithdraw(false);
-
-            userMapper.signUp(userDto);
-            result = userMapper.findByUserInfo(userDto.getUserId());
         }
-        return result;
+
+        String joinPossibleDate = userMapper.getJoinPossibleDate(request.getUserId());
+        log.info("[재가입 가능 날짜] : {} ", joinPossibleDate);
+
+        if (joinPossibleDate != null &&
+                userMapper.isJoinPossible(request.getUserId(), joinPossibleDate) == 1) {
+            log.info("[탈퇴날짜 기준으로 30일 이내로 재가입 불가]");
+            throw new FashionServerException(ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getMessage(),
+                    ErrorCode.USER_ALREADY_WITHDRAWN_ERROR.getStatus());
+        }
+
+        // UserType 유효성 검사 + set
+        UserType validUserType = Arrays.stream(UserType.values())
+                .filter(userType -> request.getUserType().equals(userType))
+                .findFirst()
+                .orElseThrow(() -> new FashionServerException(
+                        ErrorCode.USER_TYPE_NOT_FOUND_ERROR.getMessage(),
+                        ErrorCode.USER_TYPE_NOT_FOUND_ERROR.getStatus()
+                ));
+
+        UserDto userDto = UserDto.builder()
+                .userId(request.getUserId())
+                .password(encrypt.hashPassword(request.getPassword()))
+                .address(request.getAddress())
+                .phoneNumber(request.getPhoneNumber())
+                .userType(validUserType)
+                .isJoin(true)
+                .isWithdraw(false)
+                .build();
+
+        userMapper.signUp(userDto);
+        UserDto result = userMapper.findByUserInfo(userDto.getUserId());
+        return UserResponse.from(result);
+    }
+
+    public UserResponse login(UserLoginRequest request) {
+        UserDto userDto = passwordCheck(request.getUserId(), request.getPassword());
+
+        if (userDto == null || userDto.getId() == 0) {
+            throw new FashionServerException(ErrorCode.LOGIN_FAIL_ERROR.getMessage(),
+                    ErrorCode.LOGIN_FAIL_ERROR.getStatus());
+        }
+
+        String token = jwtTokenProvider.generateToken(userDto.getId(), userDto.getUserType());
+        log.info("[로그인] 완료 userId: {}", request.getUserId());
+
+        userDto.setToken(token);
+        return UserResponse.from(userDto);
     }
 
     @Transactional
-    public int userWithdraw(int id) {
-        return userMapper.userWithdraw(id);
-    }
+    public void userInfoUpdate(int id, UserUpdateRequset requset) {
+        UserDto userDto = userMapper.findById(id);
+        if (userDto == null) {
+            throw new FashionServerException(ErrorCode.USER_NOT_FOUND_ERROR.getMessage(),
+                    ErrorCode.USER_NOT_FOUND_ERROR.getStatus());
+        }
 
-    @Transactional
-    public void userInfoUpdate(int id, UserDto userDto) {
-        if (!isExistId(userDto.getUserId())) {
-            throw new FashionServerException(ErrorCode.USER_NOT_FOUND_ERROR.getMessage(), 604);
+        UserDto updateDto = UserDto.builder()
+                .id(id)
+                .password(StringUtils.isBlank(requset.getPassword()) ?
+                        userDto.getPassword() :
+                        encrypt.hashPassword(requset.getPassword()))
+                .address(StringUtils.isBlank(requset.getAddress()) ?
+                        userDto.getAddress() : requset.getAddress())
+                .phoneNumber(StringUtils.isBlank(requset.getPhoneNumber()) ?
+                        userDto.getPhoneNumber() : requset.getPhoneNumber())
+                .build();
+
+        /*if (!isExistId(userDto.getUserId())) {
+            throw new FashionServerException(ErrorCode.USER_NOT_FOUND_ERROR.getMessage(),
+                    ErrorCode.USER_NOT_FOUND_ERROR.getStatus());
         } else {
             if (!StringUtils.isBlank(userDto.getPassword())) {
                 userDto.setPassword(encrypt.hashPassword(userDto.getPassword()));
@@ -120,44 +125,61 @@ public class UserService {
             }
             if (!StringUtils.isBlank(userDto.getAddress())) {
                 userDto.setAddress(userDto.getAddress());
-            }
-            userDto.setId(id);
-            userMapper.userInfoUpdate(userDto);
-        }
+            }*/
+        userMapper.userInfoUpdate(updateDto);
+    }
+
+    @Transactional
+    public int userWithdraw(int id) {
+        return userMapper.userWithdraw(id);
+    }
+
+    @Transactional
+    public UserResponse completeOAuthProfile(String token, OAuthProfileRequest request) {
+        String rawToken = token.replace("Bearer ", "");
+
+        // 임시 토큰에서 정보 추출
+        String email = jwtTokenProvider.getEmail(rawToken);
+        String oauthId = jwtTokenProvider.getOauthId(rawToken);
+        String provider = jwtTokenProvider.getProvider(rawToken);
+
+        UserDto userDto = UserDto.builder()
+                .userId(email)
+                .password(encrypt.hashPassword(request.getPassword()))
+                .address(request.getAddress())
+                .phoneNumber(request.getPhoneNumber())
+                .oauthProvider(provider)
+                .oauthId(oauthId)
+                .isProfileComplete(1)
+                .userType(UserType.USER)
+                .isJoin(true)
+                .isWithdraw(false)
+                .build();
+
+        userMapper.signUpOAuth(userDto);
+        log.info("[추가 정보 입력] 완료 email: {}", email);
+
+        UserDto result = userMapper.findByUserInfo(email);
+        return UserResponse.from(result);
     }
 
     public UserDto passwordCheck(String userId, String password) {
-        UserDto result = new UserDto();
-        boolean isMachPassword = false;
-        String hashedPassword = "";
         if (!isExistId(userId))
-            throw new FashionServerException(ErrorCode.USER_NOT_FOUND_ERROR.getMessage(), 604);
-        else
-            hashedPassword = userMapper.findByUserInfo(userId).getPassword();
+            throw new FashionServerException(
+                    ErrorCode.USER_NOT_FOUND_ERROR.getMessage(),
+                    ErrorCode.USER_NOT_FOUND_ERROR.getStatus());
 
-        if (StringUtils.isBlank(hashedPassword))
-            throw new NullPointerException(ErrorCode.INPUT_NULL_ERROR.getMessage());
-        else
-            isMachPassword = encrypt.isMach(password, hashedPassword);
+        UserDto userDto = userMapper.findByUserInfo(userId);
+        if(StringUtils.isBlank(userDto.getPassword()))
+            throw new FashionServerException(
+                    ErrorCode.INPUT_NULL_ERROR.getMessage(),
+                    ErrorCode.INPUT_NULL_ERROR.getStatus());
 
-        if (isMachPassword)
-            result = userMapper.findByUserInfo(userId);
-        return result;
-    }
+        if(!encrypt.isMach(password, userDto.getPassword()))
+            throw new FashionServerException(
+                    ErrorCode.LOGIN_FAIL_ERROR.getMessage(),
+                    ErrorCode.LOGIN_FAIL_ERROR.getStatus());
 
-    public UserDto login(@NotBlank String userId, @NotBlank String password) {
-        UserDto userDto = passwordCheck(userId, password);
-
-        if (userDto == null || userDto.getId() == 0) {
-            throw new FashionServerException(ErrorCode.LOGIN_FAIL_ERROR.getMessage(), 607);
-        }
-
-        // 세션 대신 JWT 토큰 발급
-        String token = jwtTokenProvider.generateToken(userDto.getId(), userDto.getUserType());
-        log.info("[로그인] 완료 userId: {}", userId);
-
-        // 토큰 UserDto에 담아서 응답
-        userDto.setToken(token);
         return userDto;
     }
 }

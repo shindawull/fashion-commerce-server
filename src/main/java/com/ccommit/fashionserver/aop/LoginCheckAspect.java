@@ -1,5 +1,7 @@
 package com.ccommit.fashionserver.aop;
 
+import com.ccommit.fashionserver.common.exception.ErrorCode;
+import com.ccommit.fashionserver.common.exception.FashionServerException;
 import com.ccommit.fashionserver.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,10 +51,15 @@ public class LoginCheckAspect {
             }
 
             if (!isLoginCheck) {
-                throw new Exception("접근 권한이 없습니다.");
+                throw new FashionServerException(ErrorCode.USER_NOT_AUTHORIZED_ERROR.getMessage()
+                        , ErrorCode.USER_NOT_AUTHORIZED_ERROR.getStatus());
+
             }
+        } catch (FashionServerException e) {
+            throw e;
         } catch (Exception e) {
-            throw new Exception("로그인이 필요합니다. : " + e.getMessage());
+            throw new FashionServerException(ErrorCode.USER_NOT_AUTHORIZED_ERROR.getMessage()
+                    , ErrorCode.USER_NOT_AUTHORIZED_ERROR.getStatus());
         }
 
         // 4. controller 첫 번째 파라미터에 userId 주입
@@ -62,5 +69,4 @@ public class LoginCheckAspect {
 
         return proceedingJoinPoint.proceed(modifiedArgs);
     }
-
 }
