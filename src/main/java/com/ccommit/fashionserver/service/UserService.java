@@ -37,7 +37,6 @@ public class UserService {
         return userMapper.findByUserInfo(userId);
     }
 
-
     @Transactional
     public UserResponse signUp(UserSignUpRequest request) {
         if (isExistId(request.getUserId())) {
@@ -113,19 +112,6 @@ public class UserService {
                         userDto.getPhoneNumber() : requset.getPhoneNumber())
                 .build();
 
-        /*if (!isExistId(userDto.getUserId())) {
-            throw new FashionServerException(ErrorCode.USER_NOT_FOUND_ERROR.getMessage(),
-                    ErrorCode.USER_NOT_FOUND_ERROR.getStatus());
-        } else {
-            if (!StringUtils.isBlank(userDto.getPassword())) {
-                userDto.setPassword(encrypt.hashPassword(userDto.getPassword()));
-            }
-            if (!StringUtils.isBlank(userDto.getPhoneNumber())) {
-                userDto.setPhoneNumber(userDto.getPhoneNumber());
-            }
-            if (!StringUtils.isBlank(userDto.getAddress())) {
-                userDto.setAddress(userDto.getAddress());
-            }*/
         userMapper.userInfoUpdate(updateDto);
     }
 
