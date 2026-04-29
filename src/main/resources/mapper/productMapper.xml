@@ -17,14 +17,11 @@
         <if test="name != null and name != ''">
             name = #{name},
         </if>
-        <if test="saleQuantity != 0">
+        <if test="saleQuantity != null">
             sale_quantity = #{saleQuantity},
         </if>
-        <if test="price != 0">
+        <if test="price != null">
             price =  #{price},
-        </if>
-        <if test="categoryId != 0">
-            category_id = #{categoryId},
         </if>
         <if test="brandName != null and brandName != ''">
             brand_name = #{brandName},
@@ -50,18 +47,23 @@
         <if test="categoryId != categoryAllNumber and categoryId != null">
             AND category_id = #{categoryId}
         </if>
-        <if test="searchType == 'NEW'  and searchType.equals('NEW') ">
-            ORDER BY create_date DESC
-        </if>
-        <if test="searchType == 'LOW_PRICE' and searchType.equals('LOW_PRICE') ">
-            ORDER BY CAST(price AS UNSIGNED) ASC
-        </if>
-        <if test="searchType == 'HIGH_PRICE' and searchType.equals('HIGH_PRICE') ">
-            ORDER BY CAST(price AS UNSIGNED) DESC
-        </if>
-        <if test="searchType == 'LIKE' and searchType.equals('LIKE') ">
-            ORDER BY like_count DESC
-        </if>
+        <choose>
+            <when test="searchType == 'NEW'">
+                ORDER BY create_date DESC    
+            </when>
+            <when test="searchType == 'LOW_PRICE'">
+                ORDER BY price ASC
+            </when>
+            <when test="searchType == 'HIGH_PRICE'">
+                ORDER BY price DESC
+            </when>
+            <when test="searchType == 'LIKE'">
+                ORDER BY like_count DESC
+            </when>
+            <otherwise>
+                ORDER BY create_date DESC
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getDetailProduct" resultType="com.ccommit.fashionserver.dto.ProductDto">

@@ -1,5 +1,10 @@
 package com.ccommit.fashionserver.dto;
 
+import com.ccommit.fashionserver.common.exception.ErrorCode;
+import com.ccommit.fashionserver.common.exception.FashionServerException;
+
+import java.util.Arrays;
+
 public enum CategoryType {
     ALL("전체", 1),
     CLOTHING("의류", 2),
@@ -21,5 +26,14 @@ public enum CategoryType {
 
     public int getNumber() {
         return number;
+    }
+
+
+    public static CategoryType from(String categoryName) {
+        return Arrays.stream(CategoryType.values())
+                .filter(categoryType -> categoryType.getName().equals(categoryName))
+                .findFirst()
+                .orElseThrow(() -> new FashionServerException(ErrorCode.CATEGORY_NOT_FOUND_ERROR.getMessage(),
+                        ErrorCode.CATEGORY_NOT_FOUND_ERROR.getStatus()));
     }
 }
