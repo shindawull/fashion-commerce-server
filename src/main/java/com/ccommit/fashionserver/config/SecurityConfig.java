@@ -35,7 +35,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/sign-up",
                                 "/users/login",
-                                "/users/oauth/profile"
+                                "/users/oauth/profile",
+                                "/products/**"
                         ).permitAll()
                         // 나머지 인증 필요
                         .anyRequest().authenticated()
