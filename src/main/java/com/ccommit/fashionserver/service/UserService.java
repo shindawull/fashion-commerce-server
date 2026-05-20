@@ -56,7 +56,7 @@ public class UserService {
 
         // UserType 유효성 검사 + set
         UserType validUserType = Arrays.stream(UserType.values())
-                .filter(userType -> request.getUserType().equals(userType))
+                .filter(userType -> userType.equals(request.getUserType()))
                 .findFirst()
                 .orElseThrow(() -> new FashionServerException(
                         ErrorCode.USER_TYPE_NOT_FOUND_ERROR.getMessage(),
