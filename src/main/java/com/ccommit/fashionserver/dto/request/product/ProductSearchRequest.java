@@ -2,8 +2,10 @@ package com.ccommit.fashionserver.dto.request.product;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ProductSearchRequest {
     private String categoryName;    // null 이면 전체 조회
