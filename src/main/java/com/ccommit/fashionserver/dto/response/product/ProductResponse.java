@@ -1,14 +1,12 @@
 package com.ccommit.fashionserver.dto.response.product;
 
 import com.ccommit.fashionserver.dto.ProductDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter
+@Setter
 @Builder
 public class ProductResponse {
     private int id;
