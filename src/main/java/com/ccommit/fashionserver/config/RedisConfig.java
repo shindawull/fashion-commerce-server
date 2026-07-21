@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -18,18 +19,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-/**
- * packageName    : com.ccommit.fashionserver.config
- * fileName       : RedisConfig
- * author         : juoiy
- * date           : 2023-10-08
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-10-08        juoiy       최초 생성
- */
 @Configuration
+@EnableCaching
 public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
@@ -47,9 +38,10 @@ public class RedisConfig {
     /**
      * Jackson2는 Java8의 LocalDate의 타입을 정확히 알지못해서 적절히 직렬화를 해주지 않는다.
      * 그래서 역직렬화 시 에러가 발생한다.
-     * 따라서, ObjectMapper를 Serializer에 전달하여 직렬화 및 역직렬화를 정상화한다.*
-     */
-    private Object objectMapper() {
+     * 따라서, ObjectMapper를 Serializer에 전달하여 직렬화 및 역직렬화를 정상화한다.
+     * ObjectMapper 반환타입 수정 + @Bean 제거 (직접 사용용)
+     * **/
+    private ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.registerModule(new JavaTimeModule());
@@ -68,29 +60,27 @@ public class RedisConfig {
      * 출처:https://go-coding.tistory.com/101
      * */
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(
+            RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(
+                new GenericJackson2JsonRedisSerializer(objectMapper())); //objectMapper 적용
         redisTemplate.setConnectionFactory(connectionFactory);
-
         return redisTemplate;
     }
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager
-                .RedisCacheManagerBuilder
-                .fromConnectionFactory(connectionFactory);
-
-        RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeValuesWith(RedisSerializationContext.SerializationPair
-                        .fromSerializer(new GenericJackson2JsonRedisSerializer())) // value Serialize 변경
+        RedisCacheConfiguration configuration = RedisCacheConfiguration
+                .defaultCacheConfig()
+                .serializeValuesWith(
+                        RedisSerializationContext.SerializationPair
+                                .fromSerializer(
+                                        new GenericJackson2JsonRedisSerializer(objectMapper())))
                 .entryTtl(Duration.ofSeconds(expireTime));
-
-        builder.cacheDefaults(configuration);
-        return builder.build();
+        return RedisCacheManager.RedisCacheManagerBuilder
+                .fromConnectionFactory(connectionFactory)
+                .cacheDefaults(configuration).build();
     }
-
 }

@@ -12,6 +12,8 @@ import com.ccommit.fashionserver.dto.response.product.ProductResponse;
 import com.ccommit.fashionserver.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class ProductService {
 
     private final ProductMapper productMapper;
 
+    @Cacheable(cacheNames = "productList", key = "#request.categoryName + '-' + #request.searchType")
     public List<ProductResponse> getProductList(ProductSearchRequest request) {
         String categoryName = request.getCategoryName() == null ?
                 CategoryType.ALL.getName() : request.getCategoryName();
@@ -50,8 +53,8 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(cacheNames = "product", key = "#productId")
     public ProductResponse getDetailProduct(int productId) {
-        // TODO: Redis 캐싱 적용 예정
         ProductDto productDto = productMapper.getDetailProduct(productId);
         if (productDto == null)
             throw new FashionServerException(ErrorCode.PRODUCT_NOT_FOUND_ERROR.getMessage(),
@@ -59,7 +62,9 @@ public class ProductService {
         return ProductResponse.from(productDto);
     }
 
+
     @Transactional
+    @CacheEvict(cacheNames = {"productList", "product"}, allEntries = true)
     public ProductResponse insertProduct(Integer loginSession, ProductInsertRequest request) {
         CategoryType validCategoryType = CategoryType.from(request.getCategoryName());
 
@@ -80,7 +85,9 @@ public class ProductService {
         return ProductResponse.from(productMapper.getDetailProduct(productDto.getId()));
     }
 
+
     @Transactional
+    @CacheEvict(cacheNames = {"productList", "product"}, allEntries = true)
     public ProductResponse updateProduct(Integer loginSession, ProductUpdateRequest request) {
         if (productMapper.getDetailProduct(request.getId()) == null) {
             throw new FashionServerException(ErrorCode.PRODUCT_NOT_FOUND_ERROR.getMessage(),
@@ -105,6 +112,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {"productList", "product"}, allEntries = true)
     public void deleteProduct(int id) {
         if (productMapper.getDetailProduct(id) == null) {
             throw new FashionServerException(ErrorCode.PRODUCT_NOT_FOUND_ERROR.getMessage(),
