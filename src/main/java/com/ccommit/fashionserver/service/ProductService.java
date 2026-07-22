@@ -30,13 +30,8 @@ public class ProductService {
 
     @Cacheable(cacheNames = "productList", key = "#request.categoryName + '-' + #request.searchType")
     public List<ProductResponse> getProductList(ProductSearchRequest request) {
-        String categoryName = request.getCategoryName() == null ?
-                CategoryType.ALL.getName() : request.getCategoryName();
-        String searchType = request.getSearchType() == null ?
-                SearchType.NEW.getName() : request.getSearchType().toUpperCase();
-
-        CategoryType validCategoryType = CategoryType.from(categoryName);
-        SearchType validSearchType = SearchType.from(searchType);
+        CategoryType validCategoryType = CategoryType.from(request.getCategoryName());
+        SearchType validSearchType = SearchType.from(request.getSearchType());
 
         log.info("[상품 조회] categoryType : {}, searchType: {}",
                 validCategoryType.getName(), validSearchType.getName());
