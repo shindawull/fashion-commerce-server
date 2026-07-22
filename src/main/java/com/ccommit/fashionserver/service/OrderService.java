@@ -24,17 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * packageName    : com.ccommit.fashionserver.service
- * fileName       : OrderService
- * author         : juoiy
- * date           : 2023-09-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-27        juoiy       최초 생성
- */
 @Log4j2
 @Service
 public class OrderService {

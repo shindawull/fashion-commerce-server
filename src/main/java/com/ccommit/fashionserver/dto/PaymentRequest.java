@@ -2,17 +2,6 @@ package com.ccommit.fashionserver.dto;
 
 import lombok.*;
 
-/**
- * packageName    : com.ccommit.fashionserver.dto
- * fileName       : PaymentReq
- * author         : juoiy
- * date           : 2023-10-14
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-10-14        juoiy       최초 생성
- */
 @Getter
 @Setter
 @Builder

@@ -1,13 +1,12 @@
 package com.ccommit.fashionserver.controller;
 
-import com.ccommit.fashionserver.common.CommonResponse;
 import com.ccommit.fashionserver.aop.LoginCheck;
-import com.ccommit.fashionserver.dto.OrderDto;
-import com.ccommit.fashionserver.dto.PaymentDto;
-import com.ccommit.fashionserver.dto.ProductDto;
-import com.ccommit.fashionserver.dto.RequestProductDto;
+import com.ccommit.fashionserver.common.CommonResponse;
 import com.ccommit.fashionserver.common.exception.ErrorCode;
 import com.ccommit.fashionserver.common.exception.FashionServerException;
+import com.ccommit.fashionserver.dto.OrderDto;
+import com.ccommit.fashionserver.dto.PaymentDto;
+import com.ccommit.fashionserver.dto.RequestProductDto;
 import com.ccommit.fashionserver.dto.response.product.ProductResponse;
 import com.ccommit.fashionserver.service.OrderService;
 import com.ccommit.fashionserver.service.ProductService;
@@ -22,17 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * packageName    : com.ccommit.fashionserver.controller
- * fileName       : OrderController
- * author         : juoiy
- * date           : 2023-09-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-27        juoiy       최초 생성
- */
 @Log4j2
 @RestController
 @RequestMapping("/orders")
