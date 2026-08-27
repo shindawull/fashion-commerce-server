@@ -3,17 +3,6 @@ package com.ccommit.fashionserver.dto;
 import lombok.*;
 import org.json.simple.JSONObject;
 
-/**
- * packageName    : com.ccommit.fashionserver.dto
- * fileName       : PaymentRes
- * author         : juoiy
- * date           : 2023-10-14
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-10-14        juoiy       최초 생성
- */
 @Getter
 @Setter
 @Builder
