@@ -14,17 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * packageName    : com.ccommit.fashionserver.controller
- * fileName       : PaymentController
- * author         : juoiy
- * date           : 2023-10-14
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-10-14        juoiy       최초 생성
- */
 @Log4j2
 @RestController
 @RequestMapping("/payments")

@@ -19,11 +19,15 @@ public enum ErrorCode {
     PRODUCT_UPDATE_ERROR(611, "상품 수정에 실패하였습니다."),
     PRODUCT_DELETE_ERROR(612, "상품 삭제에 실패하였습니다."),
     PRODUCT_NOT_FOUND_ERROR(613, "존재하지 않는 상품입니다."),
+    PRODUCT_QUANTITY_NOT_ENOUGH_ERROR(614, "상품 재고가 부족합니다."),
 
     // 카테고리/검색 관련 (620번대)
     CATEGORY_NOT_FOUND_ERROR(620, "존재하지 않는 카테고리입니다."),
     SEARCH_TYPE_NOT_FOUND_ERROR(621, "존재하지 않는 검색 타입입니다."),
     USER_TYPE_NOT_FOUND_ERROR(622,"존재하지 않는 회원 타입입니다."),
+
+    // 장바구니 관련 (640번대)
+    CART_PRODUCT_NOT_USING_ERROR(640, "장바구니에 담긴 상품이 없습니다."),
 
     // 공통 (666)
     INPUT_NULL_ERROR(666, "입력값이 없습니다. 확인해주세요.");

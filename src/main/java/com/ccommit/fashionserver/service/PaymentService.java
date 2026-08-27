@@ -19,17 +19,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * packageName    : com.ccommit.fashionserver.service
- * fileName       : PaymentService
- * author         : juoiy
- * date           : 2023-10-14
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-10-14        juoiy       최초 생성
- */
 @Log4j2
 @Service
 public class PaymentService {

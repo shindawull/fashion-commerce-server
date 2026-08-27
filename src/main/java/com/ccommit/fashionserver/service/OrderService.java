@@ -8,6 +8,7 @@ import com.ccommit.fashionserver.mapper.OrderMapper;
 import com.ccommit.fashionserver.mapper.PaymentMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.simple.JSONArray;
@@ -24,41 +25,16 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * packageName    : com.ccommit.fashionserver.service
- * fileName       : OrderService
- * author         : juoiy
- * date           : 2023-09-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-27        juoiy       최초 생성
- */
+
 @Log4j2
+@RequiredArgsConstructor
 @Service
 public class OrderService {
-    @Autowired
     private final OrderMapper orderMapper;
-    @Autowired
     private final ProductService productService;
-
-    @Autowired
     private final PaymentService paymentService;
-
-    @Autowired
     private final PaymentMapper paymentMapper;
-
-    @Autowired
     private final StringRedisTemplate redisTemplate;
-
-    public OrderService(OrderMapper orderMapper, ProductService productService, PaymentService paymentService, PaymentMapper paymentMapper, StringRedisTemplate redisTemplate) {
-        this.orderMapper = orderMapper;
-        this.productService = productService;
-        this.paymentService = paymentService;
-        this.paymentMapper = paymentMapper;
-        this.redisTemplate = redisTemplate;
-    }
 
     public OrderDto insertOrder(int userId, RequestProductDto orderProductList) throws JsonProcessingException {
         OrderDto orderDto = new OrderDto();

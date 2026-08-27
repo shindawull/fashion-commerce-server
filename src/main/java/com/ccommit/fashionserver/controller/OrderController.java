@@ -1,20 +1,19 @@
 package com.ccommit.fashionserver.controller;
 
-import com.ccommit.fashionserver.common.CommonResponse;
 import com.ccommit.fashionserver.aop.LoginCheck;
-import com.ccommit.fashionserver.dto.OrderDto;
-import com.ccommit.fashionserver.dto.PaymentDto;
-import com.ccommit.fashionserver.dto.ProductDto;
-import com.ccommit.fashionserver.dto.RequestProductDto;
+import com.ccommit.fashionserver.common.CommonResponse;
 import com.ccommit.fashionserver.common.exception.ErrorCode;
 import com.ccommit.fashionserver.common.exception.FashionServerException;
+import com.ccommit.fashionserver.dto.OrderDto;
+import com.ccommit.fashionserver.dto.PaymentDto;
+import com.ccommit.fashionserver.dto.RequestProductDto;
 import com.ccommit.fashionserver.dto.response.product.ProductResponse;
 import com.ccommit.fashionserver.service.OrderService;
 import com.ccommit.fashionserver.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,31 +21,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * packageName    : com.ccommit.fashionserver.controller
- * fileName       : OrderController
- * author         : juoiy
- * date           : 2023-09-27
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-09-27        juoiy       최초 생성
- */
+
 @Log4j2
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-    @Autowired
     private final OrderService orderService;
-    @Autowired
     private final ProductService productService;
     private StringRedisTemplate redisTemplate;
-
-    public OrderController(OrderService orderService, ProductService productService) {
-        this.orderService = orderService;
-        this.productService = productService;
-    }
 
     @LoginCheck(types = LoginCheck.UserType.USER)
     @PostMapping("")
