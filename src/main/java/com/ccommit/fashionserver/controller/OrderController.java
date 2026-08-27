@@ -11,9 +11,9 @@ import com.ccommit.fashionserver.dto.response.product.ProductResponse;
 import com.ccommit.fashionserver.service.OrderService;
 import com.ccommit.fashionserver.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,20 +21,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @Log4j2
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-    @Autowired
     private final OrderService orderService;
-    @Autowired
     private final ProductService productService;
     private StringRedisTemplate redisTemplate;
-
-    public OrderController(OrderService orderService, ProductService productService) {
-        this.orderService = orderService;
-        this.productService = productService;
-    }
 
     @LoginCheck(types = LoginCheck.UserType.USER)
     @PostMapping("")
