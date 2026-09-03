@@ -2,6 +2,7 @@ package com.ccommit.fashionserver.mapper;
 
 import com.ccommit.fashionserver.dto.OrderDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,15 +12,20 @@ public interface OrderMapper {
 
     List<OrderDto> getUserOrderList(int userId);
 
-    OrderDto getUserOrder(String orderId, int userId);
+    OrderDto getUserOrder(@Param("orderId") String orderId,
+                          @Param("userId") int userId);
 
-    int updateSaleQuantity(int resultQuantity, int productId);
+    int decreaseSaleQuantity(@Param("orderQuantity") int orderQuantity,
+                             @Param("productId") int productId);
 
     int isExistOrderId(String orderId);
 
-    String getOrderCancelPossibleDate(int status, String orderId);
+    String getOrderCancelPossibleDate(@Param("status") int status,
+                                      @Param("orderId") String orderId);
 
-    int isOrderCancelPossible(String orderId, int status, String orderCancelPossibleDate);
+    int isOrderCancelPossible(@Param("orderId") String orderId,
+                              @Param("status") int status,
+                              @Param("orderCancelPossibleDate") String orderCancelPossibleDate);
 
     int updateOrderCancel(OrderDto orderDto);
 
