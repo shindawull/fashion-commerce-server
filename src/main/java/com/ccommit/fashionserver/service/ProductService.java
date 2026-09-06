@@ -120,4 +120,14 @@ public class ProductService {
                     ErrorCode.PRODUCT_DELETE_ERROR.getStatus());
         }
     }
+
+    @Transactional
+    @CacheEvict(cacheNames = {"productList", "product"}, allEntries = true)
+    public void decreaseStock(int productId, int orderQuantity) {
+        int result = productMapper.decreaseSaleQuantity(productId, orderQuantity);
+        if (result == 0)
+            throw new FashionServerException(
+                    ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH_ERROR.getMessage(),
+                    ErrorCode.PRODUCT_QUANTITY_NOT_ENOUGH_ERROR.getStatus());
+    }
 }

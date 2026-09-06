@@ -6,9 +6,9 @@
     <insert id="insertOrder" parameterType="com.ccommit.fashionserver.dto.OrderDto" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO orders (order_id, total_price, status, payment_id, create_date,
-        shipping_status, product_info, user_id)
+        shipping_status, user_id)
         VALUES (#{orderId}, #{totalPrice}, #{status}, #{paymentId}, now(),
-        #{shippingStatus}, #{productInfo}, #{userId})
+        #{shippingStatus}, #{userId})
         <selectKey keyProperty="id" resultType="int" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -23,7 +23,6 @@
         create_date,
         update_date,
         shipping_status,
-        product_info,
         user_id
         FROM orders
         WHERE user_id = #{userId}
@@ -45,19 +44,11 @@
         create_date,
         update_date,
         shipping_status,
-        product_info,
         user_id
         FROM orders
         WHERE order_id = #{orderId}
         AND user_id = #{userId}
     </select>
-
-    <update id="decreaseSaleQuantity" parameterType="int">
-        UPDATE products
-        SET sale_quantity = sale_quantity - #{orderQuantity}
-        WHERE id = #{productId}
-        AND sale_quantity >= #{orderQuantity}
-    </update>
 
     <select id="getOrderCancelPossibleDate" resultType="String">
         SELECT DATE_ADD(DATE_FORMAT(create_date, '%Y-%m-%d'), INTERVAL 14 DAY) as orderCancelPossibleDate
@@ -87,5 +78,20 @@
         update_date = now()
         WHERE order_id = #{orderId}
     </update>
+
+    <insert id="insertOrderItem">
+        INSERT INTO order_items (order_id, product_id, product_name, quantity, price, create_date)
+        VALUES
+        <foreach collection="orderItems" item="item" separator=",">
+            (#{item.orderId}, #{item.productId}, #{item.productName},
+             #{item.quantity}, #{item.price}, now())
+        </foreach>
+    </insert>
+
+    <select id="getOrderItems" resultType="com.ccommit.fashionserver.dto.OrderItemDto">
+        SELECT id, order_id, product_id, product_name, quantity, price
+        FROM order_items
+        WHERE order_id = #{orderId}
+    </select>
 
 </mapper>

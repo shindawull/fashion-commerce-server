@@ -85,4 +85,11 @@
         DELETE FROM products
         WHERE id = #{id}
     </delete>
+
+    <update id="decreaseSaleQuantity" parameterType="int">
+        UPDATE products
+        SET sale_quantity = sale_quantity - #{orderQuantity}
+        WHERE id = #{productId}
+        AND sale_quantity >= #{orderQuantity}
+    </update>
 </mapper>

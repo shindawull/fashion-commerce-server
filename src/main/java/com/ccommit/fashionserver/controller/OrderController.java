@@ -8,13 +8,10 @@ import com.ccommit.fashionserver.dto.OrderDto;
 import com.ccommit.fashionserver.dto.PaymentDto;
 import com.ccommit.fashionserver.dto.RequestProductDto;
 import com.ccommit.fashionserver.service.OrderService;
-import com.ccommit.fashionserver.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +26,13 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-
     @PostMapping("")
     @LoginCheck(types = LoginCheck.UserType.USER)
     public ResponseEntity<CommonResponse<OrderDto>> insertOrder(Integer userId, @RequestBody RequestProductDto orderProductList) throws JsonProcessingException {
         if (orderProductList == null || orderProductList.getProductDtoList() == null
                 || orderProductList.getProductDtoList().isEmpty())
             throw new FashionServerException(
-                    ErrorCode.PRODUCT_NOT_FOUND_ERROR.getMessage(),ErrorCode.PRODUCT_NOT_FOUND_ERROR.getStatus());
+                    ErrorCode.PRODUCT_NOT_FOUND_ERROR.getMessage(), ErrorCode.PRODUCT_NOT_FOUND_ERROR.getStatus());
 
         OrderDto orderDto = orderService.insertOrder(userId, orderProductList);
         return ResponseEntity.ok(new CommonResponse<>(HttpStatus.OK, "SUCCESS", "상품 주문에 성공하였습니다.", orderDto));

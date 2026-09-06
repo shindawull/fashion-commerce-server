@@ -1,36 +1,27 @@
 package com.ccommit.fashionserver.dto;
 
-/**
- * packageName    : com.ccommit.fashionserver.dto
- * fileName       : OrderStatus
- * author         : juoiy
- * date           : 2023-11-13
- * description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2023-11-13        juoiy       최초 생성
- */
+
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
 
-    ORDER_COMPLETION(501, "주문 완료"),
-    ORDER_CANCEL(509, "주문 취소");
-    // 결제 취소
-    private final int status;
+    RECEIVED("RECEIVED", "주문 접수"),
+    ORDER_COMPLETE("ORDER_COMPLETE", "주문 완료"),
+    PAYING("PAYING", "결제 중"),
+    PAYMENT_COMPLETE("PAYMENT_COMPLETE", "결제 완료"),
+    PAYMENT_CANCEL("PAYMENT_CANCEL", "결제 취소"),
+    SHIPPING("SHIPPING", "배송 중"),
+    DELIVERY_COMPLETE("DELIVERY_COMPLETE", "배송 완료"),
+    REFUNDING("REFUNDING", "환불 중"),
+    REFUND_COMPLETE("REFUND_COMPLETE", "환불 완료");
+
+    private final String status;
     private final String statusName;
 
-    OrderStatus(int status, String statusName) {
+    OrderStatus(String status, String statusName) {
         this.status = status;
         this.statusName = statusName;
     }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public String getStatusName() {
-        return statusName;
-    }
-
 
 }
