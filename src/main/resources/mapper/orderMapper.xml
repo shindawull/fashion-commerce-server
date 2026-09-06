@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccommit.fashionserver.mapper.OrderMapper">
+    <insert id="insertOrder" parameterType="com.ccommit.fashionserver.dto.OrderDto" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO orders (order_id, total_price, status, payment_id, create_date,
+        shipping_status, user_id)
+        VALUES (#{orderId}, #{totalPrice}, #{status}, #{paymentId}, now(),
+        #{shippingStatus}, #{userId})
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="getUserOrderList" resultType="com.ccommit.fashionserver.dto.OrderDto">
+        SELECT id,
+        order_id,
+        total_price,
+        status,
+        payment_id,
+        create_date,
+        update_date,
+        shipping_status,
+        user_id
+        FROM orders
+        WHERE user_id = #{userId}
+        ORDER BY id DESC
+    </select>
+
+    <select id="isExistOrderId" resultType="int">
+        SELECT COUNT(order_id)
+        FROM orders
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="getUserOrder" resultType="com.ccommit.fashionserver.dto.OrderDto">
+        SELECT id,
+        order_id,
+        total_price,
+        status,
+        payment_id,
+        create_date,
+        update_date,
+        shipping_status,
+        user_id
+        FROM orders
+        WHERE order_id = #{orderId}
+        AND user_id = #{userId}
+    </select>
+
+    <select id="getOrderCancelPossibleDate" resultType="String">
+        SELECT DATE_ADD(DATE_FORMAT(create_date, '%Y-%m-%d'), INTERVAL 14 DAY) as orderCancelPossibleDate
+        FROM orders
+        WHERE status = #{status}
+        and order_id = #{orderId}
+    </select>
+
+    <select id="isOrderCancelPossible" resultType="int">
+        SELECT COUNT(order_id)
+        FROM orders
+        WHERE order_id = #{orderId}
+        AND status = #{status}
+        AND DATE_FORMAT(#{orderCancelPossibleDate}, '%Y-%m-%d') > now()
+    </select>
+
+    <update id="updateOrderCancel" parameterType="com.ccommit.fashionserver.dto.OrderDto">
+        UPDATE orders
+        SET status = #{status},
+        update_date = now()
+        WHERE order_id = #{orderId}
+    </update>
+
+    <update id="updateOrderPaymentId" parameterType="com.ccommit.fashionserver.dto.OrderDto">
+        UPDATE orders
+        SET payment_id = #{paymentId},
+        update_date = now()
+        WHERE order_id = #{orderId}
+    </update>
+
+    <insert id="insertOrderItem">
+        INSERT INTO order_items (order_id, product_id, product_name, quantity, price, create_date)
+        VALUES
+        <foreach collection="orderItems" item="item" separator=",">
+            (#{item.orderId}, #{item.productId}, #{item.productName},
+             #{item.quantity}, #{item.price}, now())
+        </foreach>
+    </insert>
+
+    <select id="getOrderItems" resultType="com.ccommit.fashionserver.dto.OrderItemDto">
+        SELECT id, order_id, product_id, product_name, quantity, price
+        FROM order_items
+        WHERE order_id = #{orderId}
+    </select>
+
+</mapper>

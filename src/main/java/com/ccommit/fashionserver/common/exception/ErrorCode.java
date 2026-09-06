@@ -26,8 +26,20 @@ public enum ErrorCode {
     SEARCH_TYPE_NOT_FOUND_ERROR(621, "존재하지 않는 검색 타입입니다."),
     USER_TYPE_NOT_FOUND_ERROR(622,"존재하지 않는 회원 타입입니다."),
 
+    // 주문 관련 (630번대)
+    ORDER_INSERT_ERROR(630, "주문정보 등록에 실패하였습니다."),
+    ORDER_UPDATE_ERROR(631, "주문정보 수정에 실패하였습니다."),
+    ORDER_CANCEL_ERROR(632, "주문정보 취소에 실패하였습니다."),
+    ORDER_DUPLICATION_ERROR(634, "이미 존재하는 주문정보입니다."),
+    ORDER_NOT_FOUND_ERROR(635, "존재하지않는 주문정보 입니다."),
+    ORDER_CANCEL_IMPOSSIBLE_DATE_ERROR(636, "주문취소가 불가능한 날짜입니다."),
+    ORDER_CANCEL_IMPOSSIBLE_ERROR(636, "주문취소가 불가능합니다."),
+
     // 장바구니 관련 (640번대)
     CART_PRODUCT_NOT_USING_ERROR(640, "장바구니에 담긴 상품이 없습니다."),
+
+    // 결제 관련 (650번대)
+    PAYMENT_NOT_FOUND_ERROR(650, "존재하지 않는 결제정보 입니다."),
 
     // 공통 (666)
     INPUT_NULL_ERROR(666, "입력값이 없습니다. 확인해주세요.");
