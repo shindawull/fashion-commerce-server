@@ -59,7 +59,7 @@ public class CartService {
 
         int cartQuantity = currentQuantity == null ? 0 : Integer.parseInt(String.valueOf(currentQuantity));
 
-        // HINCRBY - 기존 수향에 더한다. 없으면 0에서 시작
+        // HINCRBY - 기존 수량에 더한다. 없으면 0에서 시작
         int requestedQuantity = cartQuantity + request.getQuantity();
 
         validateQuantity(requestedQuantity);
