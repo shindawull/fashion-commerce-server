@@ -3,18 +3,13 @@ package com.ccommit.fashionserver.service;
 import com.ccommit.fashionserver.common.exception.ErrorCode;
 import com.ccommit.fashionserver.common.exception.FashionServerException;
 import com.ccommit.fashionserver.dto.*;
-import com.ccommit.fashionserver.dto.response.product.ProductResponse;
 import com.ccommit.fashionserver.mapper.OrderMapper;
 import com.ccommit.fashionserver.mapper.PaymentMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,56 +21,26 @@ public class OrderService {
     private final ProductService productService;
     private final PaymentService paymentService;
     private final PaymentMapper paymentMapper;
+    private final OrderItemService orderItemService;
+    private final OrderNumberGenerator orderNumberGenerator;
 
     @Transactional
-    public OrderDto insertOrder(int userId, RequestProductDto orderProductList) throws JsonProcessingException {
+    public OrderDto insertOrder(int userId, RequestProductDto orderProductList) {
+        // 1. 주문 상품 처리 (재고 차감 + 조립)
+        List<OrderItemDto> orderItemDtos = orderItemService.createOrderItems(orderProductList);
+        int orderTotalPrice = orderItemService.calculateTotalPrice(orderItemDtos);
+
+        // 2. 주문 생성
         OrderDto orderDto = new OrderDto();
-        List<OrderItemDto> orderItemDtos = new ArrayList<>();
-        int orderTotalPrice = 0;
-
-        for (int i = 0; i < orderProductList.getProductDtoList().size(); i++) {
-            ProductDto orderProduct = orderProductList.getProductDtoList().get(i);
-            int productId = orderProduct.getId();
-            int orderQuantity = orderProduct.getSaleQuantity();
-
-            ProductResponse productDto = productService.getDetailProduct(productId);
-
-            // 재고 차감 (원자적 UPDATE + 캐시 무효화)
-            productService.decreaseStock(productId, orderQuantity);
-
-            // 금액 계산
-            int orderPrice = orderQuantity * productDto.getPrice();
-            orderTotalPrice += orderPrice;
-
-            log.debug("productId: {}, orderQuantity: {}, price: {}, orderPrice: {}, orderTotalPrice: {}",
-                    productId, orderQuantity, productDto.getPrice(), orderPrice, orderTotalPrice);
-
-            // 주문 상품 정보 담기
-            orderItemDtos.add(OrderItemDto.builder()
-                    .productId(productId)
-                    .productName(productDto.getName())
-                    .quantity(orderQuantity)
-                    .price(productDto.getPrice())
-                    .build());
-        } // for end
-
-        String orderName = orderItemDtos.get(0).getProductName()
-                + " 외 " + (orderItemDtos.size() - 1) + "개";
-
+        orderDto.setOrderId(orderNumberGenerator.generator());
         orderDto.setTotalPrice(orderTotalPrice);
         orderDto.setStatus(OrderStatus.ORDER_COMPLETE.getStatus());
         orderDto.setShippingStatus("PREPARING"); // TODO: 책임 분리 후 수정
         orderDto.setUserId(userId);
 
-        final int LENGTH = 20; // 주문번호 길이 제한
-
-        String orderId = RandomStringUtils.randomAlphanumeric(LENGTH);
-        orderDto.setOrderId(orderId);
-        int isExistOrderId = orderMapper.isExistOrderId(orderDto.getOrderId());
-
-        if (isExistOrderId != 0)
-            throw new FashionServerException(
-                    ErrorCode.ORDER_DUPLICATION_ERROR.getMessage(), ErrorCode.ORDER_DUPLICATION_ERROR.getStatus());
+        /* TODO: 결제 복구 시 다시 복원
+        String orderName = orderItemDtos.get(0).getProductName()
+                + " 외 " + (orderItemDtos.size() - 1) + "개";*/
 
         int insertResult = orderMapper.insertOrder(orderDto);
         if (insertResult == 0)
@@ -83,12 +48,8 @@ public class OrderService {
                     ErrorCode.ORDER_INSERT_ERROR.getMessage(),
                     ErrorCode.ORDER_INSERT_ERROR.getStatus());
 
-        /* forEach안에서는 쓰는 변수 값이 변하면 안되서
-        useGeneratedKeys 로 채워진 PK를 따로 각 항목에 셋팅 */
-        int generatedOrderId = orderDto.getId();
-        orderItemDtos.forEach(item -> item.setOrderId(generatedOrderId));
-
-        orderMapper.insertOrderItem(orderItemDtos);
+        // 3. 주문 상품 저장 (orders PK 참조)
+        orderItemService.saveOrderItem(orderDto.getId(), orderItemDtos);
 
         // TODO: 카드결제 API START
         /*PaymentRequest paymentRequest = new PaymentRequest();
@@ -108,10 +69,10 @@ public class OrderService {
             throw new FashionServerException(
                     ErrorCode.ORDER_UPDATE_ERROR.getMessage(), ErrorCode.ORDER_UPDATE_ERROR.getStatus());*/
 
-        return orderMapper.getUserOrder(orderDto.getOrderId(), orderDto.getUserId());
+        return orderMapper.getUserOrder(orderDto.getOrderId(), userId);
     }
 
-    public List<OrderDto> getUserOrderList(int userId) throws ParseException {
+    public List<OrderDto> getUserOrderList(int userId) {
         List<OrderDto> responseOrders = orderMapper.getUserOrderList(userId);
 
         if (responseOrders.isEmpty())
@@ -119,22 +80,10 @@ public class OrderService {
                     ErrorCode.ORDER_NOT_FOUND_ERROR.getMessage(), ErrorCode.ORDER_NOT_FOUND_ERROR.getStatus());
 
         for (OrderDto orderDto : responseOrders) {
-            orderDto.setOrderItems(orderMapper.getOrderItems(orderDto.getId()));
+            orderDto.setOrderItems(orderItemService.getOrderItems(orderDto.getId()));
         }
 
         return responseOrders;
-    }
-
-    public List<ProductResponse> getDetailProductInfo(RequestProductDto orderProductList) {
-        List<ProductResponse> productDtoList = new ArrayList<>();
-
-        for (int i = 0; i < orderProductList.getProductDtoList().size(); i++) {
-            ProductResponse productDto = productService.getDetailProduct(orderProductList.getProductDtoList().get(i).getId());
-            productDto.setSaleQuantity(orderProductList.getProductDtoList().get(i).getSaleQuantity());
-            productDtoList.add(productDto);
-        }
-
-        return productDtoList;
     }
 
     public OrderDto orderCancel(int userId, String orderId, PaymentDto paymentDto) {
