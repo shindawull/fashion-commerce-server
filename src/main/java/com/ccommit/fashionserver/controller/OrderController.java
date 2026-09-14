@@ -11,7 +11,6 @@ import com.ccommit.fashionserver.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +39,7 @@ public class OrderController {
 
     @GetMapping("/list")
     @LoginCheck(types = LoginCheck.UserType.USER)
-    public ResponseEntity<CommonResponse<List<OrderDto>>> getUserOrderList(Integer userId) throws ParseException {
+    public ResponseEntity<CommonResponse<List<OrderDto>>> getUserOrderList(Integer userId) {
         List<OrderDto> orderDtoList = orderService.getUserOrderList(userId);
         return ResponseEntity.ok(new CommonResponse<>(HttpStatus.OK, "SUCCESS", "주문 목록 조회에 성공하였습니다.", orderDtoList));
     }
