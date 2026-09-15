@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><title>결제 성공</title></head>
+<body>
+<h1>결제 요청 성공</h1>
+<pre id="params"></pre>
+<script>
+  document.getElementById("params").textContent =
+    decodeURIComponent(window.location.search);
+</script>
+</body>
+</html>

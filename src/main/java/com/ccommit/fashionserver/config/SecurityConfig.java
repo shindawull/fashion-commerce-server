@@ -32,7 +32,7 @@ public class SecurityConfig {
                 // 경로별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         // 이 경로들은 로그인 없이 접근 가능
-                        .requestMatchers(
+                        .requestMatchers("/*.html", "/*.js", "/*.css",
                                 "/users/sign-up",
                                 "/users/login",
                                 "/users/oauth/profile",

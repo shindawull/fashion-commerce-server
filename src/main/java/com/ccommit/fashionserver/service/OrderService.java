@@ -18,7 +18,6 @@ import java.util.List;
 @Service
 public class OrderService {
     private final OrderMapper orderMapper;
-    private final ProductService productService;
     private final PaymentService paymentService;
     private final PaymentMapper paymentMapper;
     private final OrderItemService orderItemService;
@@ -34,7 +33,7 @@ public class OrderService {
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderId(orderNumberGenerator.generator());
         orderDto.setTotalPrice(orderTotalPrice);
-        orderDto.setStatus(OrderStatus.ORDER_COMPLETE.getStatus());
+        orderDto.setStatus(OrderStatus.RECEIVED.getStatus()); // 결제 대기
         orderDto.setShippingStatus("PREPARING"); // TODO: 책임 분리 후 수정
         orderDto.setUserId(userId);
 
@@ -51,25 +50,18 @@ public class OrderService {
         // 3. 주문 상품 저장 (orders PK 참조)
         orderItemService.saveOrderItem(orderDto.getId(), orderItemDtos);
 
-        // TODO: 카드결제 API START
-        /*PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.setAmount(orderDto.getTotalPrice());
-        paymentRequest.setCardExpirationMonth("06");
-        paymentRequest.setCardExpirationYear("25");
-        paymentRequest.setCardNumber("5388032333580235");
-        paymentRequest.setCustomerIdentityNumber("950609");
-        paymentRequest.setOrderId(orderDto.getOrderId());
-        paymentRequest.setOrderName(orderName);
-        paymentService.insertCardPayment(paymentRequest);
+        /*int paymentId = paymentMapper.getPaymentInfo(orderDto.getOrderId()).getId();
+        orderDto.setPaymentId(paymentId);*/
+        // payment end
 
-        int paymentId = paymentMapper.getPaymentInfo(orderDto.getOrderId()).getId();
-        orderDto.setPaymentId(paymentId);
-
-        if (orderMapper.updateOrderPaymentId(orderDto) == 0)
+        /*if (orderMapper.updateOrderPaymentId(orderDto) == 0)
             throw new FashionServerException(
-                    ErrorCode.ORDER_UPDATE_ERROR.getMessage(), ErrorCode.ORDER_UPDATE_ERROR.getStatus());*/
+                    ErrorCode.ORDER_UPDATE_ERROR.getMessage(), ErrorCode.ORDER_UPDATE_ERROR.getStatus());
+*/
+        OrderDto result = orderMapper.getUserOrder(orderDto.getOrderId(), userId);
+        result.setOrderItems(orderItemService.getOrderItems(result.getId()));
 
-        return orderMapper.getUserOrder(orderDto.getOrderId(), userId);
+        return result;
     }
 
     public List<OrderDto> getUserOrderList(int userId) {
@@ -108,11 +100,10 @@ public class OrderService {
         PaymentDto paymentDtoInto = paymentMapper.getPaymentInfo(orderId);
         if (paymentDtoInto == null)
             throw new FashionServerException(
-                    ErrorCode.PAYMENT_NOT_FOUND_ERROR.getMessage(), ErrorCode.PAYMENT_NOT_FOUND_ERROR.getStatus());
+                    ErrorCode.CARD_PAYMENT_NOT_FOUND_ERROR.getMessage(), ErrorCode.CARD_PAYMENT_NOT_FOUND_ERROR.getStatus());
 
         paymentDtoInto.setCancelReason(paymentDto.getCancelReason());
 
-        // 토스페이먼츠 결제 취소 API : START
         // 토스페이먼츠 결제 취소 API : START
         PaymentResponse paymentResponse = paymentService.paymentCancel(paymentDtoInto);
         OrderDto orderDto = new OrderDto();

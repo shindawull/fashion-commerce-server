@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccommit.fashionserver.mapper.PaymentMapper">
+
+    <insert id="insertPaymentInfo" parameterType="com.ccommit.fashionserver.dto.PaymentDto">
+        INSERT INTO payments (status, create_date, order_id, card_number, payment_key)
+        VALUES (#{status}, now(), #{orderId}, #{cardNumber}, #{paymentKey})
+    </insert>
+
+    <update id="updatePaymentCancel" parameterType="com.ccommit.fashionserver.dto.PaymentDto">
+        UPDATE payments
+        SET
+        status = #{status},
+        cancel_reason = #{cancelReason},
+        update_date = now()
+        WHERE payment_key = #{paymentKey}
+    </update>
+
+    <select id="getPaymentInfo" resultType="com.ccommit.fashionserver.dto.PaymentDto">
+        SELECT id,
+        order_id,
+        status,
+        create_date,
+        card_number,
+        payment_key,
+        cancel_reason,
+        update_date
+        FROM payments
+        WHERE order_id = #{orderId}
+    </select>
+
+</mapper>
