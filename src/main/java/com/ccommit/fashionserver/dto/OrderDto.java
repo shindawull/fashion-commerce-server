@@ -19,7 +19,6 @@ public class OrderDto {
     private Integer paymentId;  // 결제번호
     private Date createDate;    // 등록날짜
     private Date updateDate;    // 수정날짜
-    private String shippingStatus;          // 배송상태
     private int userId;                    // 구매자번호
     private List<OrderItemDto> orderItems; // 상품정보
 

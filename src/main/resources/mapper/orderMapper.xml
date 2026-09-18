@@ -5,10 +5,8 @@
 <mapper namespace="com.ccommit.fashionserver.mapper.OrderMapper">
     <insert id="insertOrder" parameterType="com.ccommit.fashionserver.dto.OrderDto" useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO orders (order_id, total_price, status, payment_id, create_date,
-        shipping_status, user_id)
-        VALUES (#{orderId}, #{totalPrice}, #{status}, #{paymentId}, now(),
-        #{shippingStatus}, #{userId})
+        INSERT INTO orders (order_id, total_price, status, payment_id, create_date, user_id)
+        VALUES (#{orderId}, #{totalPrice}, #{status}, #{paymentId}, now(), #{userId})
         <selectKey keyProperty="id" resultType="int" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -22,7 +20,6 @@
         payment_id,
         create_date,
         update_date,
-        shipping_status,
         user_id
         FROM orders
         WHERE user_id = #{userId}
@@ -43,7 +40,6 @@
         payment_id,
         create_date,
         update_date,
-        shipping_status,
         user_id
         FROM orders
         WHERE order_id = #{orderId}

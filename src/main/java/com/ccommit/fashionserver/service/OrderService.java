@@ -34,7 +34,6 @@ public class OrderService {
         orderDto.setOrderId(orderNumberGenerator.generator());
         orderDto.setTotalPrice(orderTotalPrice);
         orderDto.setStatus(OrderStatus.RECEIVED.getStatus()); // 결제 대기
-        orderDto.setShippingStatus("PREPARING"); // TODO: 책임 분리 후 수정
         orderDto.setUserId(userId);
 
         /* TODO: 결제 복구 시 다시 복원
@@ -107,7 +106,7 @@ public class OrderService {
         // 토스페이먼츠 결제 취소 API : START
         PaymentResponse paymentResponse = paymentService.paymentCancel(paymentDtoInto);
         OrderDto orderDto = new OrderDto();
-        orderDto.setStatus(OrderStatus.PAYMENT_CANCEL.getStatus());
+        orderDto.setStatus(PaymentStatus.PAYMENT_CANCEL.getPaymentCode());
         orderDto.setOrderId(orderId);
         int updateResult = orderMapper.updateOrderCancel(orderDto);
         if (updateResult == 0)
